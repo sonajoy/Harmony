@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Playlists</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .modal { transition: opacity 0.25s ease; }
+        body.modal-active { overflow-x: hidden; overflow-y: visible !important; }
+    </style>
+</head>
+<header class="bg-white shadow-sm">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="{% static "images/image-260nw-1717788820.webp" %}" alt="Harmony AI Logo" class="h-10 w-10 mr-3">
+            <h1 class="text-2xl font-bold text-purple-600">Harmony AI</h1>
+        </div>
+        <nav>
+            <ul class="flex space-x-6">
+                <li><a href="{% url 'home_view' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Home</a></li>
+                <li><a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Dashboard</a></li>
+                <li><a href="{% url 'favorites' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Favorites</a></li>
+                <li><a href="{% url 'playlist_list' %}" class="text-purple-600 font-semibold">Playlists</a></li>
+                <li><a href="{% url 'logout' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<body class="bg-gray-100">
+
+<div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">My Playlists</h1>
+    <button class="bg-purple-600 text-white px-4 py-2 rounded mb-4" onclick="openModal('createModal')">Create Playlist</button>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for playlist in playlists %}
+        <div class="bg-white p-4 rounded-lg shadow-md">
+            <a href="{% url 'playlist_detail' playlist.id %}">
+            {% if playlist.image %}
+            <img src="{{ playlist.image.url }}" alt="Playlist Cover" class="w-full h-40 object-cover rounded-md mb-2">
+            {% else %}
+            <img src="/static/images/default_playlist.png" alt="Playlist Cover" class="w-full h-40 object-cover rounded-md mb-2">
+            {% endif %}
+            <h3 class="font-semibold text-gray-800 text-lg">{{ playlist.name }}</h3>
+            <p class="text-sm text-gray-600 mb-2">{{ playlist.songs.count }} songs</p>
+            <!-- <a href="{% url 'playlist_detail' playlist.id %}" class="text-purple-600 hover:text-purple-800 text-sm">View Playlist</a> -->
+
+            <div class="flex items-center space-x-2">
+                <!-- Edit Playlist Button -->
+                <button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="openModal('editModal{{ playlist.id }}')">Edit</button>
+                
+                <!-- Delete Playlist Button -->
+                <form action="{% url 'delete_playlist' playlist.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                </form>
+            </div>
+            
+        </a>
+        </div>
+
+
+
+        <!-- Edit Playlist Modal -->
+        <div class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center" id="editModal{{ playlist.id }}">
+            <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+            
+            <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+                <div class="modal-content py-4 text-left px-6">
+                    <div class="flex justify-between items-center pb-3">
+                        <p class="text-2xl font-bold text-gray-800">Edit Playlist</p>
+                        <button class="modal-close cursor-pointer z-50" onclick="closeModal('editModal{{ playlist.id }}')">
+                            <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                                <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form action="{% url 'update_playlist' playlist.id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Playlist Name</label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" name="name" value="{{ playlist.name }}">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="description">{{ playlist.description }}</textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Change Image</label>
+                            <input type="file" name="image">
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button class="modal-close bg-gray-200 p-3 rounded text-black hover:bg-gray-300 mr-2" onclick="closeModal('editModal{{ playlist.id }}')">Cancel</button>
+                            <button type="submit" class="bg-purple-600 p-3 rounded text-white hover:bg-purple-700">Update Playlist</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Create Playlist Modal -->
+<div class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center" id="createModal">
+    <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+    
+    <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+        <div class="modal-content py-4 text-left px-6">
+            <div class="flex justify-between items-center pb-3">
+                <p class="text-2xl font-bold text-gray-800">Create New Playlist</p>
+                <button class="modal-close cursor-pointer z-50" onclick="closeModal('createModal')">
+                    <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                        <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <form action="{% url 'create_playlist' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Playlist Name</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" name="name">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                    <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="description"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Playlist Image</label>
+                    <input type="file" name="image">
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button class="modal-close bg-gray-200 p-3 rounded text-black hover:bg-gray-300 mr-2" onclick="closeModal('createModal')">Cancel</button>
+                    <button type="submit" class="bg-purple-600 p-3 rounded text-white hover:bg-purple-700">Create Playlist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const openModal = (modalId) => {
+        document.getElementById(modalId).classList.remove('opacity-0');
+        document.getElementById(modalId).classList.remove('pointer-events-none');
+        document.querySelector('body').classList.add('modal-active');
+    }
+
+    const closeModal = (modalId) => {
+        document.getElementById(modalId).classList.add('opacity-0');
+        document.getElementById(modalId).classList.add('pointer-events-none');
+        document.querySelector('body').classList.remove('modal-active');
+    }
+
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal-overlay')) {
+            closeModal(event.target.closest('.modal').id);
+        }
+    }
+</script>
+
+</body>
+</html>

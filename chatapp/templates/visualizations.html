@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony AI - Music Visualizations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="{% static 'images/image-260nw-1717788820.webp' %}" alt="Harmony AI Logo" class="h-10 w-10 mr-3">
+                <h1 class="text-2xl font-bold text-purple-600">Harmony AI</h1>
+            </div>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="{% url 'home_view' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Home</a></li>
+                    <li><a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Dashboard</a></li>
+                    <li><a href="{% url 'favorites' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Favorites</a></li>
+                    <li><a href="{% url 'playlist_list' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Playlists</a></li>
+                    <li><a href="#" class="text-purple-600 font-semibold">Visualizations</a></li>
+                    <li><a href="{% url 'logout' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="gradient-bg text-white py-10">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Your Music Journey Visualized</h2>
+                <p class="text-xl mb-6">Explore your listening habits and preferences through interactive charts and graphs.</p>
+            </div>
+        </section>
+
+        <section class="py-10">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold mb-4 text-purple-600">Top Artists</h3>
+                        <canvas id="topArtistsChart"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold mb-4 text-purple-600">Playlist Growth</h3>
+                        <canvas id="playlistGrowthChart"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold mb-4 text-purple-600">Song Tags Distribution</h3>
+                        <canvas id="songTagsChart"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold mb-4 text-purple-600">Favorites Over Time</h3>
+                        <canvas id="favoritesTimelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-purple-50 py-10">
+            <div class="container mx-auto px-4">
+                <h3 class="text-2xl font-bold mb-6 text-gray-800">Your Music Stats</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <h4 class="text-xl font-semibold mb-2 text-purple-600">Total Playlists</h4>
+                        <p class="text-3xl font-bold text-gray-800">{{ total_playlists }}</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <h4 class="text-xl font-semibold mb-2 text-purple-600">Favorite Songs</h4>
+                        <p class="text-3xl font-bold text-gray-800">{{ total_favorites }}</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <h4 class="text-xl font-semibold mb-2 text-purple-600">Unique Artists</h4>
+                        <p class="text-3xl font-bold text-gray-800">{{ unique_artists }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <img src="{% static 'images/image-260nw-1717788820.webp' %}" alt="Harmony AI Logo" class="h-10 w-10 inline-block mr-2">
+                    <span class="text-xl font-semibold">Harmony AI</span>
+                </div>
+                <nav class="mb-4 md:mb-0">
+                    <ul class="flex space-x-6">
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Privacy</a></li>
+                    </ul>
+                </nav>
+                <div>
+                    <p>&copy; 2024 Harmony AI. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Top Artists Chart
+        const topArtistsCtx = document.getElementById('topArtistsChart').getContext('2d');
+        new Chart(topArtistsCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ top_artists|safe }},
+                datasets: [{
+                    label: 'Number of Songs',
+                    data: {{ top_artists_count|safe }},
+                    backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Playlist Growth Chart
+        const playlistGrowthCtx = document.getElementById('playlistGrowthChart').getContext('2d');
+        new Chart(playlistGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: {{ playlist_dates|safe }},
+                datasets: [{
+                    label: 'Number of Playlists',
+                    data: {{ playlist_counts|safe }},
+                    fill: false,
+                    borderColor: 'rgba(118, 75, 162, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Song Tags Distribution Chart
+        const songTagsCtx = document.getElementById('songTagsChart').getContext('2d');
+        new Chart(songTagsCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ song_tags|safe }},
+                datasets: [{
+                    data: {{ song_tags_count|safe }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                    ],
+                }]
+            },
+        });
+
+        // Favorites Timeline Chart
+        const favoritesTimelineCtx = document.getElementById('favoritesTimelineChart').getContext('2d');
+        new Chart(favoritesTimelineCtx, {
+            type: 'line',
+            data: {
+                labels: {{ favorites_dates|safe }},
+                datasets: [{
+                    label: 'Favorites Added',
+                    data: {{ favorites_counts|safe }},
+                    fill: true,
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

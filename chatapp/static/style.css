@@ -1,0 +1,109 @@
+/* General Styles */
+body, html {
+    background: #1c1c1c; /* Dark grey background */
+    color: #e0e0e0; /* Light grey text color for better readability */
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #333; /* Dark grey for the navbar */
+}
+
+.navbar-brand, .nav-link {
+    color: #00ccff !important; /* Teal for links */
+}
+
+.navbar-brand:hover, .nav-link:hover {
+    color: #6a0dad !important; /* Purple for hover effects */
+}
+
+/* Header Section */
+.header {
+    background: linear-gradient(135deg, #333, #1c1c1c); /* Gradient to add some depth */
+    color: #6a0dad; /* Purple text color */
+    padding: 60px 20px;
+}
+
+.header h1 {
+    font-size: 3.5em;
+    font-weight: bold;
+    color: #00ccff; /* Teal color for main title */
+}
+
+.header p {
+    font-size: 1.3em;
+    color: #e0e0e0; /* Light grey for subtitle */
+    margin-bottom: 30px;
+}
+
+/* Button Styles */
+.btn-outline-light {
+    color: #00ccff; /* Teal text */
+    border-color: #00ccff; /* Teal border */
+}
+
+.btn-outline-light:hover {
+    color: #ffffff;
+    background-color: #6a0dad; /* Purple background on hover */
+    border-color: #6a0dad; /* Purple border on hover */
+}
+
+/* Features Section */
+.feature-box {
+    background-color: #2e2e2e; /* Dark grey for the card background */
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 30px;
+    margin: 20px;
+    transition: transform 0.3s, border 0.3s;
+    color: #e0e0e0; /* Light grey text inside cards */
+}
+
+.feature-box:hover {
+    border: 2px solid #6a0dad; /* Purple border on hover */
+    transform: translateY(-5px); /* Slight lift on hover */
+}
+
+.feature-box a {
+    text-decoration: none;
+    color: #00ccff; /* Teal color for card links */
+}
+
+.feature-box a:hover {
+    color: #6a0dad; /* Purple on hover */
+}
+
+.feature-box h3 {
+    font-size: 1.5em;
+    color: #6a0dad; /* Purple color for headings */
+}
+
+.feature-box p {
+    color: #e0e0e0; /* Light grey for paragraph text */
+}
+
+/* Footer Section */
+.footer {
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+/* Miscellaneous Styling */
+.card-link {
+    display: block;
+    padding: 15px;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.card-link:hover {
+    color: #6a0dad; /* Purple color when hovering over card links */
+    transform: scale(1.02); /* Slight scale effect */
+}

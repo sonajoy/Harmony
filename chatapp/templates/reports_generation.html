@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony AI - Reports Generation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="{% static 'images/image-260nw-1717788820.webp' %}" alt="Harmony AI Logo" class="h-10 w-10 mr-3">
+                <h1 class="text-2xl font-bold text-purple-600">Harmony AI</h1>
+            </div>
+            
+        </div>
+    </header>
+
+    <main>
+        <section class="gradient-bg text-white py-20">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Music Reports Generator</h2>
+                <p class="text-xl mb-6">Generate insights into your music journey with Harmony AI</p>
+            </div>
+        </section>
+
+        <section class="py-10">
+            <div class="container mx-auto px-4">
+                <form method="get" class="mb-8">
+                    <label for="report_type" class="block text-sm font-medium text-gray-700 mb-2">Select Report Type:</label>
+                    <div class="flex space-x-4">
+                        <select name="report_type" id="report_type" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                            <option value="overview" {% if report_type == 'overview' %}selected{% endif %}>Overview</option>
+                            <option value="top_artists" {% if report_type == 'top_artists' %}selected{% endif %}>Top Artists</option>
+                            <option value="playlist_analysis" {% if report_type == 'playlist_analysis' %}selected{% endif %}>Playlist Analysis</option>
+                            <option value="recent_activity" {% if report_type == 'recent_activity' %}selected{% endif %}>Recent Activity</option>
+                        </select>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            Generate Report
+                        </button>
+                    </div>
+                </form>
+
+                {% if report_type == 'overview' %}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white overflow-hidden shadow rounded-lg">
+                            <div class="px-4 py-5 sm:p-6">
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Songs</dt>
+                                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ report_data.total_songs }}</dd>
+                            </div>
+                        </div>
+                        <div class="bg-white overflow-hidden shadow rounded-lg">
+                            <div class="px-4 py-5 sm:p-6">
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Playlists</dt>
+                                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ report_data.total_playlists }}</dd>
+                            </div>
+                        </div>
+                        <div class="bg-white overflow-hidden shadow rounded-lg">
+                            <div class="px-4 py-5 sm:p-6">
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Favorites</dt>
+                                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ report_data.total_favorites }}</dd>
+                            </div>
+                        </div>
+                    </div>
+                {% elif report_type == 'top_artists' %}
+                    <h3 class="text-2xl font-bold mb-4">Top Artists</h3>
+                    <ul class="space-y-2">
+                        {% for artist in report_data.top_artists %}
+                            <li class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
+                                <span class="text-lg font-medium text-gray-900">{{ artist.artist }}</span>
+                                <span class="text-sm text-gray-500">{{ artist.count }} song{{ artist.count|pluralize }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% elif report_type == 'playlist_analysis' %}
+                    <h3 class="text-2xl font-bold mb-4">Playlist Analysis</h3>
+                    <ul class="space-y-2">
+                        {% for playlist in report_data.playlists %}
+                            <li class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
+                                <span class="text-lg font-medium text-gray-900">{{ playlist.name }}</span>
+                                <span class="text-sm text-gray-500">{{ playlist.song_count }} song{{ playlist.song_count|pluralize }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% elif report_type == 'recent_activity' %}
+                    <h3 class="text-2xl font-bold mb-4">Recent Activity (Last 30 Days)</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2">Recent Songs Added</h4>
+                            <ul class="space-y-2">
+                                {% for song in report_data.recent_songs %}
+                                    <li class="bg-white p-4 rounded-lg shadow">
+                                        <p class="text-lg font-medium text-gray-900">{{ song.name }} by {{ song.artist }}</p>
+                                        <p class="text-sm text-gray-500">Added on {{ song.created_at|date:"F d, Y" }}</p>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2">Recent Playlists Created</h4>
+                            <ul class="space-y-2">
+                                {% for playlist in report_data.recent_playlists %}
+                                    <li class="bg-white p-4 rounded-lg shadow">
+                                        <p class="text-lg font-medium text-gray-900">{{ playlist.name }}</p>
+                                        <p class="text-sm text-gray-500">Created on {{ playlist.created_at|date:"F d, Y" }}</p>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2">Recent Favorites Added</h4>
+                            <ul class="space-y-2">
+                                {% for favorite in report_data.recent_favorites %}
+                                    <li class="bg-white p-4 rounded-lg shadow">
+                                        <p class="text-lg font-medium text-gray-900">{{ favorite.song__name }} by {{ favorite.song__artist }}</p>
+                                        <p class="text-sm text-gray-500">Added to favorites on {{ favorite.added_at|date:"F d, Y" }}</p>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-10 mt-20">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <img src="{% static 'images/image-260nw-1717788820.webp' %}" alt="Harmony AI Logo" class="h-10 w-10 inline-block mr-2">
+                    <span class="text-xl font-semibold">Harmony AI</span>
+                </div>
+                <nav class="mb-4 md:mb-0">
+                    <ul class="flex space-x-6">
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Privacy</a></li>
+                    </ul>
+                </nav>
+                <div>
+                    <p>&copy; 2024 Harmony AI. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony AI - Your Personal Music Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="{% static "images/image-260nw-1717788820.webp" %}" alt="Harmony AI Logo" class="h-10 w-10 mr-3">
+                <h1 class="text-2xl font-bold text-purple-600">Harmony AI</h1>
+            </div>
+            <nav>
+                <ul class="flex space-x-6">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'home_view' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Home</a></li>
+                        <li><a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Dashboard</a></li>
+                        <li><a href="{% url 'favorites' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Favorites</a></li>
+                        <li><a href="{% url 'playlist_list' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Playlists</a></li>
+                        <li><a href="{% url 'logout' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Logout</a></li>
+                    {% else %}
+                        <li><a href="#" class="text-purple-600 font-semibold">Home</a></li>
+                        <li><a href="{% url 'login_register' %}" class="text-gray-600 hover:text-purple-600 transition-colors">Sign-up</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="gradient-bg text-white py-20">
+            <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">Discover Your Sound</h2>
+                    <p class="text-xl mb-6">Let AI curate your perfect playlist based on your mood and preferences.</p>
+                    <a href="{% url 'login_register' %}" class="bg-white text-purple-600 px-6 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors">Get Started</a>
+                </div>
+                <div class="md:w-1/2">
+                    <img src="{% static "images/music.jpg" %}" alt="Music Lover" class="rounded-lg shadow-lg">
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20">
+            <div class="container mx-auto px-4">
+                <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">How Harmony AI Works</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div class="text-center">
+                        <img src="{% static "images/music-chatbot-recommending-playlists-artists-generative-ai_1198230-6670.avif" %}" alt="Chat Icon" class="mx-auto mb-4">
+                        <h4 class="text-xl font-semibold mb-2 text-purple-600">Chat with AI</h4>
+                        <p class="text-gray-600">Engage in a conversation to analyze your mood and preferences.</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="{% static "images/featurephoto-900x600.jpg" %}" alt="Personalization Icon" class="mx-auto mb-4">
+                        <h4 class="text-xl font-semibold mb-2 text-purple-600">Personalized Recommendations</h4>
+                        <p class="text-gray-600">Get tailored song suggestions based on your unique taste.</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="{% static "images/AI-Playlist-Feature-Highlight.webp" %}" alt="Playlist Icon" class="mx-auto mb-4" style="height: 312px;">
+                        <h4 class="text-xl font-semibold mb-2 text-purple-600">Create Playlists</h4>
+                        <p class="text-gray-600">Easily save and organize your favorite music discoveries.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-purple-50 py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h3 class="text-3xl font-bold mb-6 text-gray-800">Ready to experience music like never before?</h3>
+                <a href="{% url 'login_register' %}" class="bg-purple-600 text-white px-8 py-4 rounded-full text-xl font-semibold hover:bg-purple-700 transition-colors">Start Listening Now</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <img src="{% static "images/image-260nw-1717788820.webp" %}" alt="Harmony AI Logo" class="h-10 w-10 inline-block mr-2">
+                    <span class="text-xl font-semibold">Harmony AI</span>
+                </div>
+                <nav class="mb-4 md:mb-0">
+                    <ul class="flex space-x-6">
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-purple-300 transition-colors">Privacy</a></li>
+                    </ul>
+                </nav>
+                <div>
+                    <p>&copy; 2024 Harmony AI. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

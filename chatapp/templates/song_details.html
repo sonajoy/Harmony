@@ -1,0 +1,37 @@
+<!-- templates/song_details.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="song-details">
+    <h1>{{ song.title }}</h1>
+    <img src="{{ song.cover_image.url }}" alt="{{ song.title }}" class="song-cover-large">
+
+    <div class="song-info">
+        <p><strong>Artist:</strong> {{ song.artist }}</p>
+        <p><strong>Album:</strong> {{ song.album }}</p>
+        <p><strong>Genre:</strong> {{ song.genre }}</p>
+        <p><strong>Duration:</strong> {{ song.get_duration_in_minutes }} minutes</p>
+        <p><strong>Release Date:</strong> {{ song.release_date }}</p>
+
+        {% if is_favorite %}
+        <a href="{% url 'remove_favorite' song.id %}" class="btn btn-danger">Remove from Favorites</a>
+        {% else %}
+        <a href="{% url 'add_favorite' song.id %}" class="btn btn-primary">Add to Favorites</a>
+        {% endif %}
+    </div>
+
+    <section class="related-playlists">
+        <h2>Available in Playlists</h2>
+        <ul class="related-playlist-list">
+            {% for playlist in song.playlists.all %}
+            <li>
+                <a href="{% url 'playlist_details' playlist.id %}">{{ playlist.name }}</a>
+                by {{ playlist.user.username }}
+            </li>
+            {% empty %}
+            <li>This song is not part of any playlists.</li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock %}
