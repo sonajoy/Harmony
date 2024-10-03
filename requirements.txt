@@ -4,3 +4,4 @@ pylast
 requests
 django-crispy-forms
 gunicorn
+python-decouple
