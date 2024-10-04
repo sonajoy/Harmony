@@ -238,12 +238,11 @@ JAZZMIN_SETTINGS = {
     # - carousel
     "changeform_format": "horizontal_tabs",
 }
-<<<<<<< HEAD
+
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATIC_URL = '/static/'  # URL to use when referring to static files (CSS, JavaScript, images)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Path to the directory where static files will be collected
-=======
->>>>>>> 30d209fd3dd3640fe2dc24745938068e3dd37d94
+
