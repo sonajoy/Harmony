@@ -6,3 +6,4 @@ django-crispy-forms
 gunicorn
 python-decouple
 django-jazzmin
+whitenoise
