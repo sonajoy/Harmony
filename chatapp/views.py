@@ -452,64 +452,33 @@ def remove_from_playlist(request, playlist_song_id):
 
 
 
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.db.models import Count
-from .models import SongRecommendation, Playlist, Favorite
 import json
-
-
+from django.shortcuts import render
+from django.db.models import Count
+from .models import SongRecommendation, Playlist
 
 def visualizations(request):
-    user = request.user
+    # Top 5 artists by the number of songs
+    artist_data = list(
+        SongRecommendation.objects.values('artist')
+        .annotate(count=Count('artist'))
+        .order_by('-count')[:5]
+    )
 
-    # Top Artists
-    top_artists = SongRecommendation.objects.filter(user=user).values('artist').annotate(count=Count('artist')).order_by('-count')[:5]
-    top_artists_labels = json.dumps([artist['artist'] for artist in top_artists])
-    top_artists_counts = json.dumps([artist['count'] for artist in top_artists])
+    # Playlists grouped by users
+    playlist_data = list(
+        Playlist.objects.values('user__username')
+        .annotate(playlist_count=Count('id'))
+        .order_by('-playlist_count')[:5]
+    )
 
-    # Playlist Growth
-    playlists = Playlist.objects.filter(user=user).order_by('created_at')
-    playlist_dates = json.dumps([playlist.created_at.strftime("%Y-%m-%d") for playlist in playlists])
-    playlist_counts = json.dumps(list(range(1, len(playlists) + 1)))
-
-    # Song Tags
-    all_tags = SongRecommendation.objects.filter(user=user).values_list('tags', flat=True)
-    tag_counts = {}
-    for tags in all_tags:
-        for tag in tags.split(','):
-            tag = tag.strip()
-            if tag:
-                tag_counts[tag] = tag_counts.get(tag, 0) + 1
-    song_tags = json.dumps(list(tag_counts.keys())[:5])
-    song_tags_count = json.dumps(list(tag_counts.values())[:5])
-
-    # Favorites Timeline
-    favorites = Favorite.objects.filter(user=user).order_by('added_at')
-    favorites_dates = json.dumps([fav.added_at.strftime("%Y-%m-%d") for fav in favorites])
-    favorites_counts = json.dumps(list(range(1, len(favorites) + 1)))
-
-    # Music Stats
-    total_playlists = Playlist.objects.filter(user=user).count()
-    total_favorites = Favorite.objects.filter(user=user).count()
-    unique_artists = SongRecommendation.objects.filter(user=user).values('artist').distinct().count()
-
+    # Prepare data as JSON
     context = {
-        'top_artists': top_artists_labels,
-        'top_artists_count': top_artists_counts,
-        'playlist_dates': playlist_dates,
-        'playlist_counts': playlist_counts,
-        'song_tags': song_tags,
-        'song_tags_count': song_tags_count,
-        'favorites_dates': favorites_dates,
-        'favorites_counts': favorites_counts,
-        'total_playlists': total_playlists,
-        'total_favorites': total_favorites,
-        'unique_artists': unique_artists,
+        'artist_data': json.dumps(artist_data),  # Convert to JSON string
+        'playlist_data': json.dumps(playlist_data)  # Convert to JSON string
     }
 
     return render(request, 'visualizations.html', context)
-
 
 from django.db.models import Count
 from .models import SongRecommendation, Playlist, PlaylistSong, Favorite
