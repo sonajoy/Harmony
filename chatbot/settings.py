@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-zcnidx91^sds4)b)a%tb&%xe17#-jijha=+lb&1edqd&1ipb!!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -238,9 +238,12 @@ JAZZMIN_SETTINGS = {
     # - carousel
     "changeform_format": "horizontal_tabs",
 }
+<<<<<<< HEAD
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATIC_URL = '/static/'  # URL to use when referring to static files (CSS, JavaScript, images)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Path to the directory where static files will be collected
+=======
+>>>>>>> 30d209fd3dd3640fe2dc24745938068e3dd37d94
